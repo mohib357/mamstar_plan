@@ -1,25 +1,24 @@
 const express = require('express');
-const Category = require('../models/Category');
+const Brand = require('../models/Brand');
 const auth = require('../middleware/auth');
 const router = express.Router();
 
-// Get all categories
+// Get all brands
 router.get('/', auth, async (req, res) => {
     try {
-        const categories = await Category.find({ isActive: true })
-            .sort({ order: 1, name: 1 });
-        res.json(categories);
+        const brands = await Brand.find({ isActive: true }).sort({ name: 1 });
+        res.json(brands);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 });
 
-// Create category
+// Create brand
 router.post('/', auth, async (req, res) => {
     try {
-        const category = new Category(req.body);
-        await category.save();
-        res.status(201).json(category);
+        const brand = new Brand(req.body);
+        await brand.save();
+        res.status(201).json(brand);
     } catch (error) {
         res.status(400).json({ message: error.message });
     }

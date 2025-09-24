@@ -5,10 +5,11 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Layout from './components/Layout/Layout';
 import Orders from './pages/Orders';
+import Products from './pages/Products';
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
-  
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -16,7 +17,7 @@ const ProtectedRoute = ({ children }) => {
       </div>
     );
   }
-  
+
   return user ? children : <Navigate to="/login" />;
 };
 
@@ -44,12 +45,19 @@ function App() {
               </ProtectedRoute>
             } />
             <Route path="/orders" element={
-  <ProtectedRoute>
-    <Layout>
-      <Orders />
-    </Layout>
-  </ProtectedRoute>
-} />
+              <ProtectedRoute>
+                <Layout>
+                  <Orders />
+                </Layout>
+              </ProtectedRoute>
+            } />
+            <Route path="/products" element={
+              <ProtectedRoute>
+                <Layout>
+                  <Products />
+                </Layout>
+              </ProtectedRoute>
+            } />
             <Route path="/" element={<Navigate to="/dashboard" />} />
             <Route path="*" element={<div className="flex items-center justify-center min-h-screen">404 - Page Not Found</div>} />
           </Routes>
