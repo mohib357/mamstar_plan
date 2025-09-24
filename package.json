@@ -1,0 +1,7 @@
+{
+    "name": "mamstar-plan",
+    "private": true,
+    "scripts": {
+        "dev": "npm --prefix server run dev"
+    }
+}
