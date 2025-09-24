@@ -64,7 +64,11 @@ router.get('/', auth, async (req, res) => {
             total
         });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error('Error fetching products:', error);
+        res.status(500).json({
+            message: 'Error fetching products',
+            error: error.message
+        });
     }
 });
 
@@ -81,13 +85,44 @@ router.get('/:id', auth, async (req, res) => {
 
         res.json(product);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error('Error fetching product:', error);
+        res.status(500).json({
+            message: 'Error fetching product',
+            error: error.message
+        });
     }
 });
 
 // Create new product
 router.post('/', auth, async (req, res) => {
     try {
+        console.log('Received product data:', req.body);
+
+        // Basic validation
+        const requiredFields = ['name', 'price', 'stock', 'category'];
+        const missingFields = requiredFields.filter(field => !req.body[field]);
+
+        if (missingFields.length > 0) {
+            return res.status(400).json({
+                message: 'Missing required fields',
+                missingFields
+            });
+        }
+
+        // Check if category exists
+        const categoryExists = await Category.findById(req.body.category);
+        if (!categoryExists) {
+            return res.status(400).json({ message: 'Invalid category ID' });
+        }
+
+        // Check if brand exists (if provided)
+        if (req.body.brand) {
+            const brandExists = await Brand.findById(req.body.brand);
+            if (!brandExists) {
+                return res.status(400).json({ message: 'Invalid brand ID' });
+            }
+        }
+
         const product = new Product({
             ...req.body,
             createdBy: req.user._id
@@ -96,28 +131,55 @@ router.post('/', auth, async (req, res) => {
         await product.save();
         await product.populate('category brand');
 
+        console.log('Product created successfully:', product);
         res.status(201).json(product);
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        console.error('Product creation error:', error);
+        res.status(400).json({
+            message: 'Error creating product',
+            error: error.message
+        });
     }
 });
 
 // Update product
 router.put('/:id', auth, async (req, res) => {
     try {
+        // Check if product exists
+        const existingProduct = await Product.findById(req.params.id);
+        if (!existingProduct) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+
+        // Check if category exists (if provided)
+        if (req.body.category) {
+            const categoryExists = await Category.findById(req.body.category);
+            if (!categoryExists) {
+                return res.status(400).json({ message: 'Invalid category ID' });
+            }
+        }
+
+        // Check if brand exists (if provided)
+        if (req.body.brand) {
+            const brandExists = await Brand.findById(req.body.brand);
+            if (!brandExists) {
+                return res.status(400).json({ message: 'Invalid brand ID' });
+            }
+        }
+
         const product = await Product.findByIdAndUpdate(
             req.params.id,
             req.body,
             { new: true, runValidators: true }
         ).populate('category brand');
 
-        if (!product) {
-            return res.status(404).json({ message: 'Product not found' });
-        }
-
         res.json(product);
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        console.error('Product update error:', error);
+        res.status(400).json({
+            message: 'Error updating product',
+            error: error.message
+        });
     }
 });
 
@@ -136,7 +198,11 @@ router.delete('/:id', auth, async (req, res) => {
 
         res.json({ message: 'Product deleted successfully' });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error('Product deletion error:', error);
+        res.status(500).json({
+            message: 'Error deleting product',
+            error: error.message
+        });
     }
 });
 
@@ -159,7 +225,11 @@ router.get('/stats/overview', auth, async (req, res) => {
             outOfStockProducts
         });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error('Error fetching product stats:', error);
+        res.status(500).json({
+            message: 'Error fetching product statistics',
+            error: error.message
+        });
     }
 });
 
