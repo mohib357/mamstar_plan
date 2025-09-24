@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
+import { useLocation } from 'react-router-dom';
 
 const Layout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { user, logout } = useAuth();
+  const location = useLocation();
 
   const navigation = [
-    { name: 'Dashboard', href: '/dashboard', icon: '📊', current: location.pathname === '/dashboard' },
+  { name: 'Dashboard', href: '/dashboard', icon: '📊', current: location.pathname === '/dashboard' },
   { name: 'Order Management', href: '/orders', icon: '📦', current: location.pathname === '/orders' },
   { name: 'Products', href: '/products', icon: '🛍️', current: location.pathname === '/products' },
   { name: 'Customers', href: '/customers', icon: '👥', current: location.pathname === '/customers' },
@@ -17,10 +19,9 @@ const Layout = ({ children }) => {
 
   return (
     <div className="flex h-screen bg-gray-50">
-      {/* Sidebar */}
       <div className={`${sidebarOpen ? 'block' : 'hidden'} md:block md:w-64 bg-gray-800`}>
         <div className="flex items-center justify-center h-16 bg-gray-900">
-          <span className="text-white text-xl font-bold">Admin Panel</span>
+          <span className="text-white text-xl font-bold">Mamstar Plan</span>
         </div>
         <nav className="mt-5 px-2 space-y-1">
           {navigation.map((item) => (
@@ -40,9 +41,7 @@ const Layout = ({ children }) => {
         </nav>
       </div>
 
-      {/* Main content */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Header */}
         <header className="bg-white shadow-sm z-10">
           <div className="flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
             <button
@@ -67,7 +66,6 @@ const Layout = ({ children }) => {
           </div>
         </header>
 
-        {/* Page content */}
         <main className="flex-1 overflow-y-auto">
           {children}
         </main>
