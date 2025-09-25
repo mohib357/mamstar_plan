@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import ProductForm from '../components/Products/ProductForm';
-import EdokanProductForm from '../components/Products/EdokanProductForm';
+import AdvancedEdokanProductForm from '../components/Products/AdvancedEdokanProductForm';
 
 const Products = () => {
     const [products, setProducts] = useState([]);
@@ -250,7 +250,7 @@ const Products = () => {
 
             {/* Product Form Modal */}
             {(showAddForm || editingProduct) && (
-                <EdokanProductForm
+                <AdvancedEdokanProductForm
                     product={editingProduct}
                     onSave={handleSaveProduct}
                     onCancel={() => {

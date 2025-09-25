@@ -1,3 +1,5 @@
+// C:\Project\mamstar_plan\Client\src\components\Common\RichTextEditor.jsx
+
 import React, { useRef, useEffect } from 'react';
 
 const RichTextEditor = ({ value, onChange, placeholder = "Enter product description..." }) => {
